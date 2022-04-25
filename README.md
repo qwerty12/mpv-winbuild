@@ -1,33 +1,37 @@
 # mpv-winbuild
 
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/zhongfly/mpv-winbuild/MPV)](https://github.com/zhongfly/mpv-winbuild/actions)
-[![releases](https://img.shields.io/github/v/release/zhongfly/mpv-winbuild)](https://github.com/zhongfly/mpv-winbuild/releases/latest)
-[![downloads](https://img.shields.io/github/downloads/zhongfly/mpv-winbuild/total)](https://github.com/zhongfly/mpv-winbuild/releases)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/qwerty12/mpv-winbuild/MPV)](https://github.com/qwerty12/mpv-winbuild/actions)
+[![releases](https://img.shields.io/github/v/release/qwerty12/mpv-winbuild)](https://github.com/qwerty12/mpv-winbuild/releases/latest)
+[![downloads](https://img.shields.io/github/downloads/qwerty12/mpv-winbuild/total)](https://github.com/qwerty12/mpv-winbuild/releases)
 
-Use Github Action to build mpv for Windows with latest commit.
+Uses Github Actions to build mpv for Windows daily.
 
-Based on <https://github.com/shinchiro/mpv-winbuild-cmake>.
+Builds mpv from [my *fork* of shinchiro's mpv-winbuild-cmake](https://github.com/qwerty12/mpv-winbuild-cmake/). The notable changes are:
+
+* LuaJIT has its JIT compiler enabled
+
+* LuaSocket is built and included, so [simple-mpv-webui](https://github.com/open-dynaMIX/simple-mpv-webui) can be used out of the box
+
+Everything else is pretty much the same as shinchiro's builds.
+
+My [Scoop](https://scoop.sh/) bucket, [scoop-alts](https://github.com/qwerty12/scoop-alts), installs this version of mpv.
+
+Thanks to https://github.com/zhongfly/mpv-winbuild/
 
 ## Auto-Builds
 
-Builds run daily at 12:00 UTC (trigger by [pipedream](https://pipedream.com/)) and are automatically released on success.
+Builds run daily at 12:00 UTC and are automatically released on success.
 
 This repo only provides 64-bit version. If you need a 32-bit version, you can fork this repo and edit mpv.yml.
 
 > `mpv-dev-x86_64-xxxx.7z` is 64-bit libmpv version, including the `mpv-2.dll` file.
 > 
-> Some media players based on libmpv use `mpv-2.dll`.You can upgrade their libmpv version by overwriting mpv-2.dll.
+> Some media players based on libmpv use `mpv-2.dll`.You can upgrade their libmpv version by overwriting mpv-2.dll. You will need to add lua51.dll to the same folder as well.
 
 ### Release Retention Policy
 
 -   The last build of each month is kept for one year.
 -   The last 14 daily builds are kept.
-
-### CI Builds
-
-Every hour, check whether there is a new commit in mpv repo, if there is a new commit, builds will run automatically but will not be released.
-
-You can go to the the **[Action](https://github.com/zhongfly/mpv-winbuild/actions)** tab in this repo,and download artifact from any successful action.
 
 ## Information about packages
 

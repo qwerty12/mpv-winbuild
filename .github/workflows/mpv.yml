@@ -1,8 +1,8 @@
 name: MPV
 
 on: 
-  # schedule:
-  #   - cron:  '0 12 * * *'
+  schedule:
+     - cron:  '0 12 * * *'
   workflow_dispatch:
     inputs:
       needclean:
@@ -13,7 +13,7 @@ on:
       release:
         description: "Publish a release"
         required: false
-        default: 'false'
+        default: 'true'
         type: boolean
       command:
         description: 'input command you want to run before build'
@@ -25,7 +25,7 @@ on:
 # Workflow level env does not work properly in all fields.
 # https://github.com/actions/runner/issues/480
 env:
-  release: false
+  release: true
 
 jobs:
   # https://github.com/actions/runner/issues/480#issuecomment-1055373623
@@ -83,7 +83,7 @@ jobs:
       - name: Checkout toolchain
         uses: actions/checkout@v3
         with:
-          repository: shinchiro/mpv-winbuild-cmake
+          repository: qwerty12/mpv-winbuild-cmake
           path: mpv-winbuild-cmake
       - name: Get Params
         run: |
@@ -228,7 +228,7 @@ jobs:
           artifacts: "artifacts/*/*.7z"
           commit: version
           name: "MPV ${{ env.long_time }}"
-          body: "**MPV Git commit**: https://github.com/mpv-player/mpv/commit/${{ fromJson(needs.params.outputs.params).sha }}\n**Build Time**: ${{ env.long_time }}\n**Downloads**: ![downloads](https://badgen.net/github/assets-dl/zhongfly/mpv-winbuild/${{ env.short_time }}?cache=300)"
+          body: "**MPV Git commit**: https://github.com/mpv-player/mpv/commit/${{ fromJson(needs.params.outputs.params).sha }}\n**Build Time**: ${{ env.long_time }}\n**Downloads**: ![downloads](https://badgen.net/github/assets-dl/qwerty12/mpv-winbuild/${{ env.short_time }}?cache=300)"
           tag: "${{ env.short_time }}"
           allowUpdates: true
           prerelease: false
