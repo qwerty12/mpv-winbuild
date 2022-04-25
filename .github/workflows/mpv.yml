@@ -1,0 +1,242 @@
+name: MPV
+
+on: 
+  # schedule:
+  #   - cron:  '0 12 * * *'
+  workflow_dispatch:
+    inputs:
+      needclean:
+        description: 'Delete cache and completely rebuild erverything'
+        required: false
+        default: 'false'
+        type: boolean
+      release:
+        description: "Publish a release"
+        required: false
+        default: 'false'
+        type: boolean
+      command:
+        description: 'input command you want to run before build'
+        required: false
+      cache_id:
+        description: 'input cache_id if you want to renew cache'
+        required: false
+
+# Workflow level env does not work properly in all fields.
+# https://github.com/actions/runner/issues/480
+env:
+  release: false
+
+jobs:
+  # https://github.com/actions/runner/issues/480#issuecomment-1055373623
+  params:
+    runs-on: ubuntu-latest
+    outputs:
+      params: ${{ steps.env-vars.outputs.params }}
+    steps:
+      - name: Install jq
+        run: pip install jq
+      - name: Generate cache_id
+        run: |
+          if [ "${{ github.event.inputs.cache_id }}" ] ; then
+            echo "cache_id=${{ github.event.inputs.cache_id }}" >> $GITHUB_ENV
+          else
+            echo "cache_id=$(echo $RANDOM | md5sum | head -c 20)" >> $GITHUB_ENV
+          fi
+      - name: 'Get mpv latest commit sha'
+        id: get_sha
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const commit = await github.rest.repos.getCommit({
+              owner: 'mpv-player',
+              repo: 'mpv',
+              ref: `master`
+            })
+            core.exportVariable('sha', String(commit.data.sha))
+      - id: env-vars
+        name: Output environment variables
+        run: echo "::set-output name=params::$(echo $(jq -n 'env'))"
+
+  build_mpv:
+    name: Build MPV
+    needs: params
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:base-devel
+    strategy:
+      matrix:
+        bit: [64]
+
+    steps:
+      - name: Install Dependencies
+        run: |
+          sudo echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf
+          sudo pacman -Syu --noconfirm
+          sudo pacman -S --noconfirm --needed git gyp mercurial subversion ninja cmake meson ragel yasm nasm asciidoc enca gperf unzip p7zip gcc-multilib clang python-pip curl lib32-glib2 wget
+          pip3 install rst2pdf mako meson >/dev/null 2>&1
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global --add safe.directory $(pwd)
+          git config --global --add safe.directory $(pwd)/mpv-winbuild-cmake
+      - uses: actions/checkout@v3
+      - name: Checkout toolchain
+        uses: actions/checkout@v3
+        with:
+          repository: shinchiro/mpv-winbuild-cmake
+          path: mpv-winbuild-cmake
+      - name: Get Params
+        run: |
+          echo "sha=${{ fromJson(needs.params.outputs.params).sha }}" >> $GITHUB_ENV
+          echo "short_time=$(date "+%Y-%m-%d")" >> $GITHUB_ENV
+          echo "cache_id=${{ fromJson(needs.params.outputs.params).cache_id }}" >> $GITHUB_ENV
+
+      - name: Cache Sources
+        uses: actions/cache@v3.0.1
+        with:
+          path: ${{ github.workspace }}/mpv-winbuild-cmake/src_packages
+          key: ${{ runner.os }}-source-${{ env.short_time }}-${{ env.sha }}-${{ env.cache_id }}
+          restore-keys: |
+            ${{ runner.os }}-source-${{ env.short_time }}-${{ env.sha }}
+            ${{ runner.os }}-source-${{ env.short_time }}
+            ${{ runner.os }}-source
+      - name: Cache
+        uses: actions/cache@v3.0.1
+        with:
+          path: ${{ github.workspace }}/mpv-winbuild-cmake/build${{ matrix.bit }}
+          key: ${{ runner.os }}-mpv-build${{ matrix.bit }}-${{ env.short_time }}-${{ env.sha }}-${{ env.cache_id }}
+          restore-keys: |
+            ${{ runner.os }}-mpv-build${{ matrix.bit }}-${{ env.short_time }}-${{ env.sha }}
+            ${{ runner.os }}-mpv-build${{ matrix.bit }}-${{ env.short_time }}
+            ${{ runner.os }}-mpv-build${{ matrix.bit }}
+      - name: Clean Cache
+        if: ${{ github.event.inputs.needclean == 'true' }}
+        shell: bash
+        run: |
+          cd mpv-winbuild-cmake
+          rm -rf build${{ matrix.bit }} || true
+          rm -rf src_packages || true
+      - name: Build
+        id: build
+        shell: bash
+        run: |
+          chmod +x build.sh
+          cd mpv-winbuild-cmake
+          bash ../build.sh '${{ matrix.bit }}' '${{ github.event.inputs.command }}'
+      - name: Collect error logs
+        if: ${{ always() && steps.build.outcome == 'failure' }}
+        run: |
+          sudo 7z a logs.7z mpv-winbuild-cmake/build${{ matrix.bit }}/*-*.log -r
+      - name: upload error logs
+        uses: actions/upload-artifact@master
+        if: ${{ always() && steps.build.outcome == 'failure' }}
+        with:
+          name: logs
+          path: logs.7z
+
+      - name: "Get artifacts' name and path"
+        id: get_files
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const path = require('path');
+            const types = ["mpv-debug", "mpv-dev", "mpv"];
+            const arch = ${{ matrix.bit }} == "64" ? "x86_64" : "i686";
+            for (let type of types) {
+              const globber = await glob.create(`mpv-winbuild-cmake/release/${type}-${arch}-*.7z`);
+              const files = await globber.glob();
+              if ( files.length > 0 ) {
+                const file = files[0];
+                core.exportVariable( `${type}_name`, path.basename(file) );
+                core.exportVariable( `${type}_path`, file );
+              }
+            }
+            
+            let { stdout: ffmpeg_hash } = await exec.getExecOutput("git -C mpv-winbuild-cmake/src_packages/ffmpeg rev-parse --short HEAD");
+            ffmpeg_hash = ffmpeg_hash.trim();
+            const ffmpeg_name = `ffmpeg-${arch}-git-${ffmpeg_hash}`;
+            core.exportVariable( 'ffmpeg_name', ffmpeg_name );
+            await exec.exec(`7z a -m0=lzma2 -mx=9 -ms=on mpv-winbuild-cmake/release/${ffmpeg_name}.7z mpv-winbuild-cmake/build${{ matrix.bit }}/install/mingw/bin/ffmpeg.exe`)
+
+      - name: upload mpv-debug
+        uses: actions/upload-artifact@v3
+        if: ${{ env.mpv-debug_name && env.mpv-debug_path }}
+        with:
+          name: ${{ env.mpv-debug_name }}
+          path: ${{ env.mpv-debug_path }}
+      - name: upload mpv-dev
+        uses: actions/upload-artifact@v3
+        if: ${{ env.mpv-dev_name && env.mpv-dev_path }}
+        with:
+          name: ${{ env.mpv-dev_name }}
+          path: ${{ env.mpv-dev_path }}
+      - name: upload mpv
+        uses: actions/upload-artifact@v3
+        if: ${{ env.mpv_name && env.mpv_path }}
+        with:
+          name: ${{ env.mpv_name }}
+          path: ${{ env.mpv_path }}
+          
+      - name: upload ffmpeg
+        uses: actions/upload-artifact@v3
+        if: ${{ env.ffmpeg_name }}
+        with:
+          name: ${{ env.ffmpeg_name }}
+          path: mpv-winbuild-cmake/release/${{ env.ffmpeg_name }}.7z
+
+  publish_release:
+    name: Publish release
+    needs: [build_mpv,params]
+    if: ${{ (github.event.inputs.release != null && github.event.inputs.release == 'true') || (github.event.inputs.release == null && fromJson(needs.params.outputs.params).release ) }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: artifacts
+    
+      - name: Get current time
+        run: |
+          echo "long_time=$(date "+%Y-%m-%d %H:%M")" >> $GITHUB_ENV
+          echo "short_time=$(date "+%Y-%m-%d")" >> $GITHUB_ENV
+
+      - name: Commit version & remove existing tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          git fetch --tags
+          git checkout version || git checkout -b version origin/version || ( git checkout --orphan version && git rm -rf . )
+          echo -e "${{ env.short_time }}" > version
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add version
+          git diff-index --quiet HEAD || ( git commit -m "${{ env.short_time }}" && git push origin version )
+          if [ $(git tag -l "${{ env.short_time }}") ] ;then
+            gh release delete "${{ env.short_time }}" || true
+            git push --delete origin "${{ env.short_time }}" || true
+            git tag -d "${{ env.short_time }}" || true
+          fi
+          git checkout main
+
+      - name: Create release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "artifacts/*/*.7z"
+          commit: version
+          name: "MPV ${{ env.long_time }}"
+          body: "**MPV Git commit**: https://github.com/mpv-player/mpv/commit/${{ fromJson(needs.params.outputs.params).sha }}\n**Build Time**: ${{ env.long_time }}\n**Downloads**: ![downloads](https://badgen.net/github/assets-dl/zhongfly/mpv-winbuild/${{ env.short_time }}?cache=300)"
+          tag: "${{ env.short_time }}"
+          allowUpdates: true
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Prune old releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          git checkout main
+          bash prunetags.sh
