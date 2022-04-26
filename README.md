@@ -28,6 +28,8 @@ This repo only provides 64-bit version. If you need a 32-bit version, you can fo
 > 
 > Some media players based on libmpv use `mpv-2.dll`.You can upgrade their libmpv version by overwriting mpv-2.dll. You will need to add lua51.dll to the same folder as well.
 
+Dependencies' source is downloaded and kept for 30 days.
+
 ### Release Retention Policy
 
 -   The last build of each month is kept for one year.
