@@ -16,9 +16,3 @@ jobs:
           repository: ${{ github.repository }}
           retain_days: 30
           keep_minimum_runs: 0
-      - name: Clean Cache
-        shell: bash
-        run: |
-          cd mpv-winbuild-cmake
-          rm -rf build${{ matrix.bit }} || true
-          rm -rf src_packages || true
