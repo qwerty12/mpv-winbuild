@@ -161,6 +161,20 @@ jobs:
             await exec.exec(`7z a -m0=lzma2 -mx=9 -ms=on mpv-winbuild-cmake/release/${ffmpeg_name}.7z ./mpv-winbuild-cmake/build${{ matrix.bit }}/install/mingw/bin/ffmpeg.exe`)
             */
 
+            try {
+              const frei0r_git_proc = await exec.getExecOutput("git -C mpv-winbuild-cmake/src_packages/frei0r rev-parse --short HEAD");
+              if (frei0r_git_proc.exitCode === 0) {
+                const frei0r_hash = frei0r_git_proc.stdout.trim();
+                const frei0r_name = `frei0r-${arch}-git-${frei0r_hash}`;
+                await exec.exec(`7z a -m0=lzma2 -mx=9 -myx=9 -ms=on mpv-winbuild-cmake/release/${frei0r_name}.7z ./mpv-winbuild-cmake/build${{ matrix.bit }}/install/mingw/lib/frei0r-1`)
+                core.exportVariable( 'frei0r_name', frei0r_name );
+              } else {
+                core.info(frei0r_git_proc.stderr);
+              }
+            } catch (err) {
+              core.info(err);
+            }
+
       - name: upload mpv-debug
         uses: actions/upload-artifact@v3
         if: ${{ env.mpv-debug_name && env.mpv-debug_path }}
@@ -186,6 +200,13 @@ jobs:
         with:
           name: ${{ env.ffmpeg_name }}
           path: mpv-winbuild-cmake/release/${{ env.ffmpeg_name }}.7z
+
+      - name: upload frei0r
+        uses: actions/upload-artifact@v3
+        if: ${{ env.frei0r_name }}
+        with:
+          name: ${{ env.frei0r_name }}
+          path: mpv-winbuild-cmake/release/${{ env.frei0r_name }}.7z
 
   publish_release:
     name: Publish release
