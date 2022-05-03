@@ -18,6 +18,7 @@ Builds mpv from [my *fork* of shinchiro's mpv-winbuild-cmake](https://github.com
 
 * ffmpeg's libjxl support has been disabled. I will see if it can be enabled without causing failures at another date, but it's through mpv I've first heard of the format, so...
 
+* frei0r plugins are built. See the section below for more information.
 
 Everything else is pretty much the same as shinchiro's builds.
 
@@ -39,6 +40,18 @@ This repo only provides 64-bit version. If you need a 32-bit version, you can fo
 
 -   The last build of each month is kept for one year.
 -   The last 14 daily builds are kept.
+
+## frei0r plugin support
+
+* As I don't have a need for them personally, if they cause build problems, the first thing I will do is disable frei0r building instead of trying to work out why.
+
+* Plugins that require Cairo, OpenCV or gavl are not built/included
+
+* As they are 150 MB uncompressed, they are not bundled with the mpv build here itself.
+
+* You will need to download them separately from the [releases](https://github.com/qwerty12/mpv-winbuild/releases/latest) and extract them somewhere.
+
+* The environment variable `FREI0R_PATH` must be set to the extracted path in order for mpv to find the plugins
 
 ## Information about packages
 
