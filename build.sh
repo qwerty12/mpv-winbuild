@@ -42,6 +42,7 @@ build() {
         ninja -C $buildroot/build$bit gcc
     fi
     ninja -C $buildroot/build$bit update
+    ninja -C $buildroot/build$bit ffmpeg || true
     ninja -C $buildroot/build$bit mpv
 
     if [ -d $buildroot/build$bit/mpv-$arch* ] ; then
