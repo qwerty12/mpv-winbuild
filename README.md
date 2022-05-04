@@ -14,10 +14,6 @@ Builds mpv from [my *fork* of shinchiro's mpv-winbuild-cmake](https://github.com
 
 * LuaSocket is built and included, so [simple-mpv-webui](https://github.com/open-dynaMIX/simple-mpv-webui) can be used out of the box
 
-* libopenmpt support is disabled as the build is currently failing for reasons unbeknown to me. It will be re-added if someone else fixes it (upstream) as I am not a tracker music aficionado.
-
-* ffmpeg's libjxl support has been disabled. I will see if it can be enabled without causing failures at another date, but it's through mpv I've first heard of the format, so...
-
 * frei0r plugins are built. See the section below for more information.
 
 Everything else is pretty much the same as shinchiro's builds.
