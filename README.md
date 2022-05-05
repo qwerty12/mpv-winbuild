@@ -39,15 +39,19 @@ This repo only provides 64-bit version. If you need a 32-bit version, you can fo
 
 ## frei0r plugin support
 
-* As I don't have a need for them personally, if they cause build problems, the first thing I will do is disable frei0r building instead of trying to work out why.
+* I do not have a need for these personally. If they cause build failures, the first thing I will try is clamping the version to a known good commit (and check a long time in the future whether the latest version can be built again). Failing that, I will disable their build entirely.
 
 * Plugins that require Cairo, OpenCV or gavl are not built/included
 
-* As they are 150 MB uncompressed, they are not bundled with the mpv build here itself.
+* As they are ~~150 MB uncompressed~~ in the realm of 50 MB uncompressed, they are not bundled with the mpv build here proper.
 
-* You will need to download them separately from the [releases](https://github.com/qwerty12/mpv-winbuild/releases/latest) and extract them somewhere.
+    * You will need to download them separately from the [releases](https://github.com/qwerty12/mpv-winbuild/releases/latest) and extract them to a path of your choosing
 
-* The environment variable `FREI0R_PATH` must be set to the extracted path in order for mpv to find the plugins
+    * If you grabbed an early build of the plugins, please download them again from the latest release. I had not `strip`ped the debugging symbols from them, which made up their large size
+
+     * Most of the time, you will not need to keep downloading them with every mpv release, especially if the plugins are built from the same Git commit. If their API changes (unlikely) and mpv can't load the DLLs, then yes, download them again
+
+* The [Windows environment variable](https://www.computerhope.com/issues/ch000549.htm) `FREI0R_PATH` must be set to the full path of the folder where you extracted the plugins in order for ffmpeg/mpv to find them
 
 ## Information about packages
 
