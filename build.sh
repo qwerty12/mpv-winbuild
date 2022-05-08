@@ -37,9 +37,21 @@ build() {
     local arch=$2
     
     cmake -DTARGET_ARCH=$arch-w64-mingw32 -DALWAYS_REMOVE_BUILDFILES=ON -DSINGLE_SOURCE_LOCATION=$srcdir -G Ninja -H$gitdir -B$buildroot/build$bit
-    ninja -C $buildroot/build$bit download || true
+    for ((i = 0 ; i < 3 ; i++ )); do
+        ninja -C $buildroot/build$bit download && break
+        sleep 10s
+    done
     if [[ ! "$(ls -A $buildroot/build$bit/install/bin)" ]]; then
-        ninja -C $buildroot/build$bit gcc
+        declare -i i=0
+        while :; do
+            if ninja -C $buildroot/build$bit gcc; then
+                break
+            elif [ "$i" -ge "2" ]; then
+                exit 1
+            fi
+            ((i++))
+            sleep 10s
+        done
     fi
     ninja -C $buildroot/build$bit update
     ninja -C $buildroot/build$bit ffmpeg || true
