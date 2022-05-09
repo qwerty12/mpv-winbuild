@@ -53,6 +53,8 @@ This repo only provides 64-bit version. If you need a 32-bit version, you can fo
 
 * The [Windows environment variable](https://www.computerhope.com/issues/ch000549.htm) `FREI0R_PATH` must be set to the full path of the folder where you extracted the plugins in order for ffmpeg/mpv to find them
 
+    * Alternatively, extract the DLLs into `C:\usr\local\lib\frei0r-1\`
+
 ## Information about packages
 
 same as [shinchiro](https://github.com/shinchiro/mpv-winbuild-cmake/blob/master/README.md#information-about-packages) [![](https://flat.badgen.net/github/last-commit/shinchiro/mpv-winbuild-cmake?cache=1800)](https://github.com/shinchiro/mpv-winbuild-cmake)
