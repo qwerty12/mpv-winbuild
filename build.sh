@@ -55,6 +55,7 @@ build() {
         done
     fi
     ninja -C $buildroot/build$bit update
+    ninja -C $buildroot/build$bit vulkan-fullclean || true
     ninja -C $buildroot/build$bit ffmpeg || true
     ninja -C $buildroot/build$bit mpv
 
