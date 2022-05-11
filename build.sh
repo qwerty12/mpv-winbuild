@@ -38,6 +38,9 @@ build() {
     
     sed -i -E 's#^([[:blank:]]*--enable-cross-compile)$#\1 --logfile=${CMAKE_BINARY_DIR}/CMakeFiles/ffmpeg-ffbuild-config.log#' "$buildroot/packages/ffmpeg.cmake" || true
     cmake -DTARGET_ARCH=$arch-w64-mingw32 -DALWAYS_REMOVE_BUILDFILES=ON -DSINGLE_SOURCE_LOCATION=$srcdir -G Ninja -H$gitdir -B$buildroot/build$bit
+    for i in vulkan vulkan-header libjxl; do
+        ninja -C $buildroot/build$bit "$i-fullclean" || true
+    done
     for ((i = 0 ; i < 3 ; i++ )); do
         ninja -C $buildroot/build$bit download && break
         sleep 10s
@@ -54,9 +57,9 @@ build() {
             sleep 10s
         done
     fi
-    ninja -C $buildroot/build$bit update
-    for i in vulkan vulkan-header libjxl; do
-        ninja -C $buildroot/build$bit "$i-fullclean" || true
+    for ((i = 0 ; i < 3 ; i++ )); do
+        ninja -C $buildroot/build$bit update && break
+        sleep 10s
     done
     ninja -C $buildroot/build$bit ffmpeg || true
     ninja -C $buildroot/build$bit mpv
