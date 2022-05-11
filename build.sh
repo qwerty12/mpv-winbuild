@@ -55,7 +55,7 @@ build() {
         done
     fi
     ninja -C $buildroot/build$bit update
-    for i in vulkan vulkan-header; do
+    for i in vulkan vulkan-header libjxl; do
         ninja -C $buildroot/build$bit "$i-fullclean" || true
     done
     ninja -C $buildroot/build$bit ffmpeg || true
