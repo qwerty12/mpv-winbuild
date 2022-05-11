@@ -55,7 +55,9 @@ build() {
         done
     fi
     ninja -C $buildroot/build$bit update
-    ninja -C $buildroot/build$bit vulkan-fullclean || true
+    for i in vulkan vulkan-header; do
+        ninja -C $buildroot/build$bit "$i-fullclean" || true
+    done
     ninja -C $buildroot/build$bit ffmpeg || true
     ninja -C $buildroot/build$bit mpv
 
