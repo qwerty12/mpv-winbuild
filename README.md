@@ -16,6 +16,14 @@ Builds mpv from [my *fork* of shinchiro's mpv-winbuild-cmake](https://github.com
 
 * frei0r plugins are built. See the section below for more information.
 
+* The `mpv` here is built against the [Oniguruma](https://github.com/kkos/oniguruma) regex library to enable the (unofficial on Windows) use of the `sub-filter-regex` option
+
+    * Yes, I know `sub-filter-jsre` is an option, but I would rather deal with an actual regex library than a JS engine
+
+    * I picked Oniguruma because it's C, reasonably fast and, most importantly, provides an API that emulates the POSIX `regex.h`. PCRE2 can also do this. If there's a tangible advantage to using PCRE2, I will switch to that
+
+    * Because the mpv builds here have been modified with unofficial patches, please see if you can reproduce any bugs you may experience with [shinchiro's pristine builds](https://github.com/shinchiro/mpv-winbuild-cmake/releases) before making a bugreport to the mpv team. At the very least, let them know you're using this modified build.
+
 Everything else is pretty much the same as shinchiro's builds.
 
 My [Scoop](https://scoop.sh/) bucket, [scoop-alts](https://github.com/qwerty12/scoop-alts), installs this version of mpv.
