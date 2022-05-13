@@ -22,7 +22,9 @@ Builds mpv from [my *fork* of shinchiro's mpv-winbuild-cmake](https://github.com
 
     * I picked Oniguruma because it's C, reasonably fast and, most importantly, provides an API that emulates the POSIX `regex.h`. PCRE2 can also do this. If there's a tangible advantage to using PCRE2, I will switch to that
 
-    * Because the mpv builds here have been modified with unofficial patches, please see if you can reproduce any bugs you may experience with [shinchiro's pristine builds](https://github.com/shinchiro/mpv-winbuild-cmake/releases) before making a bugreport to the mpv team. At the very least, let them know you're using this modified build.
+    * Do not report any bugs relating to `sub-filter-regex` (maybe even subtitles in general) to the mpv team
+
+* Because the mpv builds here have been modified with unofficial patches, please see if you can reproduce any bugs you may experience with [shinchiro's pristine builds](https://github.com/shinchiro/mpv-winbuild-cmake/releases) before making a bugreport to the mpv team. At the very least, let them know you're using this modified build.
 
 Everything else is pretty much the same as shinchiro's builds.
 
