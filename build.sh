@@ -8,7 +8,7 @@ main() {
     userCommand=$2
 
     prepare
-    build_latest_meson
+    #build_latest_meson
     if [ "$1" == "32" ]; then
         package "32" "i686"
     elif [ "$1" == "64" ]; then
