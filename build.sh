@@ -62,6 +62,7 @@ build() {
         ninja -C $buildroot/build$bit update && break
         sleep 10s
     done
+    ninja -C $buildroot/build$bit mpv-fullclean || true
     ninja -C $buildroot/build$bit ffmpeg || true
     ninja -C $buildroot/build$bit mpv
 
