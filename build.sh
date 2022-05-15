@@ -8,7 +8,6 @@ main() {
     userCommand=$2
 
     prepare
-    #build_latest_meson
     if [ "$1" == "32" ]; then
         package "32" "i686"
     elif [ "$1" == "64" ]; then
@@ -39,10 +38,10 @@ build() {
     
     sed -i -E 's#^([[:blank:]]*--enable-cross-compile)$#\1 --logfile=${CMAKE_BINARY_DIR}/CMakeFiles/ffmpeg-ffbuild-config.log#' "$buildroot/packages/ffmpeg.cmake" || true
     cmake -DTARGET_ARCH=$arch-w64-mingw32 -DALWAYS_REMOVE_BUILDFILES=ON -DSINGLE_SOURCE_LOCATION=$srcdir -G Ninja -H$gitdir -B$buildroot/build$bit
-    for i in vulkan vulkan-header libjxl; do
+    for i in vulkan vulkan-header libjxl mpv; do
         ninja -C $buildroot/build$bit "$i-fullclean" || true
     done
-    for ((i = 0 ; i < 3 ; i++ )); do
+    for (( i = 0 ; i < 3 ; i++ )); do
         ninja -C $buildroot/build$bit download && break
         sleep 10s
     done
@@ -54,15 +53,14 @@ build() {
             elif [ "$i" -ge "2" ]; then
                 exit 1
             fi
-            ((i++))
             sleep 10s
+            ((i++))
         done
     fi
-    for ((i = 0 ; i < 3 ; i++ )); do
+    for (( i = 0 ; i < 3 ; i++ )); do
         ninja -C $buildroot/build$bit update && break
         sleep 10s
     done
-    ninja -C $buildroot/build$bit mpv-fullclean || true
     ninja -C $buildroot/build$bit ffmpeg || true
     ninja -C $buildroot/build$bit mpv
 
@@ -72,15 +70,6 @@ build() {
         echo "Failed compiled $bit-bit. Stop"
         exit 1
     fi
-}
-
-build_latest_meson() {
-    if [[ ! -f "$srcdir/meson.pyz" ]]; then
-        git clone --depth 1 https://github.com/mesonbuild/meson.git /usr/local/src/meson
-        /usr/local/src/meson/packaging/create_zipapp.py --outfile $srcdir/meson.pyz --interpreter '/usr/bin/env python3' /usr/local/src/meson
-        rm -rf /usr/local/src/meson
-    fi
-    ln -sf $srcdir/meson.pyz /usr/local/bin/meson
 }
 
 zip() {
