@@ -15,7 +15,7 @@ on:
         - 64bit
         - 32 bit & 64 bit
       needclean:
-        description: 'Delete cache and completely rebuild erverything'
+        description: 'Delete cache and completely rebuild everything'
         required: false
         default: 'false'
         type: boolean
@@ -202,12 +202,14 @@ jobs:
             }
 
       - name: upload mpv-debug
+        continue-on-error: true
         uses: actions/upload-artifact@v3
         if: ${{ env.mpv-debug_name && env.mpv-debug_path }}
         with:
           name: ${{ env.mpv-debug_name }}
           path: ${{ env.mpv-debug_path }}
       - name: upload mpv-dev
+        continue-on-error: true
         uses: actions/upload-artifact@v3
         if: ${{ env.mpv-dev_name && env.mpv-dev_path }}
         with:
@@ -221,6 +223,7 @@ jobs:
           path: ${{ env.mpv_path }}
           
       - name: upload ffmpeg
+        continue-on-error: true
         uses: actions/upload-artifact@v3
         if: ${{ env.ffmpeg_name }}
         with:
@@ -228,6 +231,7 @@ jobs:
           path: mpv-winbuild-cmake/release/${{ env.ffmpeg_name }}.7z
 
       - name: upload frei0r
+        continue-on-error: true
         uses: actions/upload-artifact@v3
         if: ${{ env.frei0r_name }}
         with:
@@ -236,6 +240,7 @@ jobs:
 
 
       - name: "Job summary"
+        continue-on-error: true
         uses: actions/github-script@v6
         if: ${{ always() }}
         with:
@@ -348,6 +353,7 @@ jobs:
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Prune old releases
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash

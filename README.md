@@ -6,7 +6,9 @@
 
 Uses Github Actions to build mpv for Windows daily.
 
-Builds mpv from [my *fork* of shinchiro's mpv-winbuild-cmake](https://github.com/qwerty12/mpv-winbuild-cmake/). The notable changes are:
+mpv is built from [my *fork* of shinchiro's mpv-winbuild-cmake](https://github.com/qwerty12/mpv-winbuild-cmake/). My [Scoop](https://scoop.sh/) bucket, [scoop-alts](https://github.com/qwerty12/scoop-alts), installs this version of mpv.
+
+The notable changes are:
 
 * LuaJIT has its JIT compiler enabled
 
@@ -16,7 +18,7 @@ Builds mpv from [my *fork* of shinchiro's mpv-winbuild-cmake](https://github.com
 
 * frei0r plugins are built. See the section below for more information.
 
-* The `mpv` here is built against the [Oniguruma](https://github.com/kkos/oniguruma) regex library to enable the (unofficial on Windows) use of the `sub-filter-regex` option
+* The `mpv` here is built against the [Oniguruma](https://github.com/kkos/oniguruma) regex library to enable the use of the `sub-filter-regex` option unofficially on Windows
 
     * Yes, I know `sub-filter-jsre` is an option, but I would rather deal with an actual regex library than a JS engine
 
@@ -24,17 +26,15 @@ Builds mpv from [my *fork* of shinchiro's mpv-winbuild-cmake](https://github.com
 
     * Do not report any bugs relating to `sub-filter-regex` (maybe even subtitles in general) to the mpv team
 
-* Because the mpv builds here have been modified with unofficial patches, please see if you can reproduce any bugs you may experience with [shinchiro's pristine builds](https://github.com/shinchiro/mpv-winbuild-cmake/releases) before making a bugreport to the mpv team. At the very least, let them know you're using this modified build.
+Because the mpv builds here have been modified with unofficial patches, please see if you can reproduce any bugs you may experience with [shinchiro's pristine builds](https://github.com/shinchiro/mpv-winbuild-cmake/releases) before making a bugreport to the mpv team. Let them know you're using this dirty build at the very least.
 
-Everything else is pretty much the same as shinchiro's builds.
-
-My [Scoop](https://scoop.sh/) bucket, [scoop-alts](https://github.com/qwerty12/scoop-alts), installs this version of mpv.
-
-Thanks to https://github.com/zhongfly/mpv-winbuild/
+Everything else is pretty much the same as shinchiro's builds. Thanks to https://github.com/zhongfly/mpv-winbuild/
 
 ## Auto-Builds
 
 Builds run daily at 12:00 UTC and are automatically released on success.
+
+On the first of every month, the cache will be automatically cleared. This ensures the underlying MinGW installation is fresh.
 
 This repo only provides 64-bit version. If you need a 32-bit version, you can fork this repo and edit mpv.yml.
 
@@ -44,8 +44,8 @@ This repo only provides 64-bit version. If you need a 32-bit version, you can fo
 
 ### Release Retention Policy
 
--   The last build of each month is kept for one year.
--   The last 14 daily builds are kept.
+-   Artifacts (from the Actions tab) are cleaned every 30 days
+-   Releases that are 30 days old should be removed
 
 ## frei0r plugin support
 
@@ -81,6 +81,7 @@ same as [shinchiro](https://github.com/shinchiro/mpv-winbuild-cmake/blob/master/
     -   openal-soft [![openal-soft](https://flat.badgen.net/github/last-commit/kcat/openal-soft?scale=0.8&cache=1800)](https://github.com/kcat/openal-soft)
     -   mpv [![mpv](https://flat.badgen.net/github/last-commit/mpv-player/mpv?scale=0.8&cache=1800)](https://github.com/mpv-player/mpv)
     -   luajit [![luajit](https://flat.badgen.net/github/last-commit/openresty/luajit2/v2.1-agentzh?scale=0.8&cache=1800)](https://github.com/openresty/luajit2)
+    -   luasocket [![luasocket](https://flat.badgen.net/github/last-commit/lunarmodules/luasocket?scale=0.8&cache=1800)](https://github.com/lunarmodules/luasocket)
     -   libvpx [![libvpx](https://flat.badgen.net/github/last-commit/webmproject/libvpx?scale=0.8&cache=1800)](https://chromium.googlesource.com/webm/libvpx)
     -   libwebp [![libwebp](https://flat.badgen.net/github/last-commit/webmproject/libwebp?scale=0.8&cache=1800)](https://chromium.googlesource.com/webm/libwebp)
     -   libpng [![libpng](https://flat.badgen.net/github/last-commit/glennrp/libpng?scale=0.8&cache=1800)](https://github.com/glennrp/libpng)
@@ -106,6 +107,7 @@ same as [shinchiro](https://github.com/shinchiro/mpv-winbuild-cmake/blob/master/
     -   vulkan [![Vulkan](https://flat.badgen.net/github/last-commit/KhronosGroup/Vulkan-Loader?scale=0.8&cache=1800)](https://github.com/KhronosGroup/Vulkan-Loader) 
     -   spirv-cross [![spirv-cross](https://flat.badgen.net/github/last-commit/KhronosGroup/SPIRV-Cross?scale=0.8&cache=1800)](https://github.com/KhronosGroup/SPIRV-Cross)
     -   fribidi [![fribidi](https://flat.badgen.net/github/last-commit/fribidi/fribidi?scale=0.8&cache=1800)](https://github.com/fribidi/fribidi)
+    -   frei0r [![frei0r](https://flat.badgen.net/github/last-commit/dyne/frei0r?scale=0.8&cache=1800)](https://github.com/dyne/frei0r)
     -   nettle [![nettle](https://flat.badgen.net/gitlab/last-commit/shinchiro/nettle?scale=0.8&cache=1800)](https://gitlab.com/shinchiro/nettle)
     -   libxml2 [![libxml2](https://flat.badgen.net/https/gitlab-latest-commit-rphv1x3zj2pi.runkit.sh/gitlab.gnome.org/GNOME/libxml2?scale=0.8&cache=1800)](https://gitlab.gnome.org/GNOME/libxml2)
     -   amf-headers [![amf-headers](https://flat.badgen.net/github/last-commit/GPUOpen-LibrariesAndSDKs/AMF?scale=0.8&cache=1800)](https://github.com/GPUOpen-LibrariesAndSDKs/AMF/tree/master/amf/public/include)
@@ -127,6 +129,8 @@ same as [shinchiro](https://github.com/shinchiro/mpv-winbuild-cmake/blob/master/
     -   [bzip](https://sourceware.org/pub/bzip2/) (1.0.8)
     -   [zlib](https://github.com/madler/zlib/) (1.2.12)
     -   [xvidcore](https://labs.xvid.com/source/) (1.3.7)
+    -   [dlfcn-win32](https://github.com/dlfcn-win32/dlfcn-win32) (1.3.1)
+    -   [oniguruma](https://github.com/kkos/oniguruma) (6.9.8)
     -   [vorbis](https://xiph.org/downloads/) (1.3.7)
     -   [speex](https://ftp.osuosl.org/pub/xiph/releases/speex/) (1.2.0)
     -   [ogg](https://ftp.osuosl.org/pub/xiph/releases/ogg/) (1.3.5)
