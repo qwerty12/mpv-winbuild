@@ -35,9 +35,10 @@ package() {
 build() {
     local bit=$1
     local arch=$2
-    
+    declare -r target="$arch-w64-mingw32"
+
     sed -i -E 's#^([[:blank:]]*--enable-cross-compile)$#\1 --logfile=${CMAKE_BINARY_DIR}/CMakeFiles/ffmpeg-ffbuild-config.log#' "$buildroot/packages/ffmpeg.cmake" || true
-    cmake -DTARGET_ARCH=$arch-w64-mingw32 -DALWAYS_REMOVE_BUILDFILES=ON -DSINGLE_SOURCE_LOCATION=$srcdir -G Ninja -H$gitdir -B$buildroot/build$bit
+    cmake -DTARGET_ARCH="$target" -DALWAYS_REMOVE_BUILDFILES=ON -DSINGLE_SOURCE_LOCATION=$srcdir -G Ninja -H$gitdir -B$buildroot/build$bit
     for i in vulkan vulkan-header libjxl mpv libssh; do
         ninja -C $buildroot/build$bit "$i-fullclean" || true
     done
@@ -45,7 +46,7 @@ build() {
         ninja -C $buildroot/build$bit download && break
         sleep 10s
     done
-    if [[ ! "$(ls -A $buildroot/build$bit/install/bin)" ]]; then
+    if [ ! -x "$buildroot/build$bit/install/bin/$target-c++" ]; then
         declare -i i=0
         while :; do
             if ninja -C $buildroot/build$bit gcc; then
