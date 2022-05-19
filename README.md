@@ -61,9 +61,13 @@ This repo only provides 64-bit version. If you need a 32-bit version, you can fo
 
      * Most of the time, you will not need to keep downloading them with every mpv release, especially if the plugins are built from the same Git commit. If their API changes (unlikely) and mpv can't load the DLLs, then yes, download them again
 
-* The [Windows environment variable](https://www.computerhope.com/issues/ch000549.htm) `FREI0R_PATH` must be set to the full path of the folder where you extracted the plugins in order for ffmpeg/mpv to find them
+* You have three choices for getting mpv to see the frei0r plugins:
 
-    * Alternatively, extract the DLLs into `C:\usr\local\lib\frei0r-1\`
+    * set the [Windows environment variable](https://www.computerhope.com/issues/ch000549.htm) `FREI0R_PATH` to the full path of the folder where you extracted the plugins
+
+    * extract the DLLs into `C:\usr\local\lib\frei0r-1\`
+
+    * Save [main.lua](https://raw.githubusercontent.com/qwerty12/mpv-winbuild/main/scripts/frei0r_path/main.lua) into a folder called `frei0r_path` in your mpv config `scripts` folder. With this script, you can either have the frei0r-1 folder next to the mpv.exe file or next to the main.lua script itself
 
 ## Information about packages
 
