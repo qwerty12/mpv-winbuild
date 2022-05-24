@@ -133,7 +133,6 @@ same as [shinchiro](https://github.com/shinchiro/mpv-winbuild-cmake/blob/master/
     -   [bzip](https://sourceware.org/pub/bzip2/) (1.0.8)
     -   [zlib](https://github.com/madler/zlib/) (1.2.12)
     -   [xvidcore](https://labs.xvid.com/source/) (1.3.7)
-    -   [dlfcn-win32](https://github.com/dlfcn-win32/dlfcn-win32) (1.3.1)
     -   [oniguruma](https://github.com/kkos/oniguruma) (6.9.8)
     -   [vorbis](https://xiph.org/downloads/) (1.3.7)
     -   [speex](https://ftp.osuosl.org/pub/xiph/releases/speex/) (1.2.0)
