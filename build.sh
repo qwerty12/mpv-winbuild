@@ -93,10 +93,10 @@ download_mpv_package() {
         remote_commit=$(git ls-remote https://github.com/shinchiro/mpv-packaging.git master | awk '{print $1;}')
         local_commit=$(unzip -z mpv-packaging.zip | tail +2)
         if [ "$remote_commit" != "$local_commit" ]; then
-            wget -O mpv-packaging.zip $package_url
+            wget -qO mpv-packaging.zip $package_url
         fi
     else
-        wget -O mpv-packaging.zip $package_url
+        wget -qO mpv-packaging.zip $package_url
     fi
     unzip -o mpv-packaging.zip
 }
