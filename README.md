@@ -10,9 +10,11 @@ mpv is built from [my *fork* of shinchiro's mpv-winbuild-cmake](https://github.c
 
 The notable changes are:
 
-* LuaJIT has its JIT compiler enabled
+* ~~LuaJIT has its JIT compiler enabled~~
 
-    * I assume it's intentionally disabled by default because some scripts may not be compatible with it. [But not the ones I use. 😎](https://github.com/qwerty12/mpv-config) If you start seeing problems with scripts that you weren't seeing before, try adding [`jit.off()`](https://luajit.org/ext_jit.html) to the beginning of them.
+    * ~~I assume it's intentionally disabled by default because some scripts may not be compatible with it. [But not the ones I use. 😎](https://github.com/qwerty12/mpv-config) If you start seeing problems with scripts that you weren't seeing before, try adding [`jit.off()`](https://luajit.org/ext_jit.html) to the beginning of them.~~
+
+    As of 2022-08-31, shinchiro's builds have LuaJIT's JIT compiler enabled
 
 * LuaSocket is built and included, so [simple-mpv-webui](https://github.com/open-dynaMIX/simple-mpv-webui) can be used out of the box
 
