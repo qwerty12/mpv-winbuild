@@ -50,7 +50,7 @@ build() {
     declare -r target="$arch-w64-mingw32"
 
     cmake -DTARGET_ARCH="$target" $gcc_arch -DALWAYS_REMOVE_BUILDFILES=ON -DSINGLE_SOURCE_LOCATION=$srcdir -G Ninja -H$gitdir -B$buildroot/build$bit
-    for i in vulkan vulkan-header libjxl libssh libopenmpt libzimg libplacebo mpv; do
+    for i in vulkan vulkan-header libjxl libssh libopenmpt libzimg libplacebo libsrt mpv; do
         ninja -C $buildroot/build$bit "$i-fullclean" || true
     done
     for (( i = 0 ; i < 3 ; i++ )); do
