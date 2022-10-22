@@ -124,6 +124,7 @@ prepare() {
     download_mpv_package
     cd ./mpv-packaging-master
     7z x -y ./d3dcompiler*.7z
+    rm -f ./mpv-root/updater.bat ./mpv-root/installer/updater.ps1
     cd ../..
 }
 
