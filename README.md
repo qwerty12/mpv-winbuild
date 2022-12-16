@@ -1,6 +1,6 @@
 # mpv-winbuild
 
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/qwerty12/mpv-winbuild/MPV)](https://github.com/qwerty12/mpv-winbuild/actions)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/qwerty12/mpv-winbuild/mpv.yml?branch=main)](https://github.com/qwerty12/mpv-winbuild/actions)
 [![releases](https://img.shields.io/github/v/release/qwerty12/mpv-winbuild)](https://github.com/qwerty12/mpv-winbuild/releases/latest)
 [![downloads](https://img.shields.io/github/downloads/qwerty12/mpv-winbuild/total)](https://github.com/qwerty12/mpv-winbuild/releases)
 
