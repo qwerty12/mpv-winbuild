@@ -148,16 +148,6 @@ jobs:
             ${{ runner.os }}-mpv-build${{ matrix.bit }}-${{ env.short_time }}-${{ env.sha }}
             ${{ runner.os }}-mpv-build${{ matrix.bit }}-${{ env.short_time }}
             ${{ runner.os }}-mpv-build${{ matrix.bit }}
-      - name: Always rebuild packages
-        shell: bash
-        run: |
-          if cd mpv-winbuild-cmake; then
-              while IFS= read -r line; do
-                  pkg="$(basename -- "$line" .cmake)"
-                  rm -rf "build${{ matrix.bit }}/packages/$pkg-prefix"
-                  touch --no-create "$line"
-              done < <(grep -E -l '^([[:blank:]])*PATCH_COMMAND ' packages/*.cmake)
-          fi
       - name: Clean Cache
         if: ${{ github.event.inputs.needclean == 'true' || endsWith(env.short_time, '-01') }}
         shell: bash
