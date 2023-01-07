@@ -149,7 +149,16 @@ jobs:
           key: ${{ runner.os }}-mpv-build${{ matrix.bit }}-${{ env.cache_suffix }}
           restore-keys: |
             ${{ runner.os }}-mpv-build${{ matrix.bit }}
-
+      - name: Always rebuild packages with patches
+        shell: bash
+        run: |
+          if cd mpv-winbuild-cmake; then
+              while IFS= read -r line; do
+                  pkg="$(basename -- "$line" .cmake)"
+                  rm -rf "build${{ matrix.bit }}/packages/$pkg-prefix"
+                  touch --no-create "$line"
+              done < <(grep -E -l '^([[:blank:]])*PATCH_COMMAND ' packages/*.cmake)
+          fi
       - name: Running custom command
         if: ${{ github.event.inputs.command != '' }}
         shell: bash
