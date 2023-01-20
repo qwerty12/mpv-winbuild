@@ -40,9 +40,9 @@ On the first of every month, the cache will be automatically cleared. This ensur
 
 This repo only provides 64-bit version. If you need a 32-bit version, you can fork this repo and edit mpv.yml.
 
-> `mpv-dev-x86_64-xxxx.7z` is 64-bit libmpv version, including the `mpv-2.dll` file.
+> `mpv-dev-x86_64-xxxx.7z` is 64-bit libmpv version, including the `libmpv-2.dll` file.
 > 
-> Some media players based on libmpv use `mpv-2.dll`.You can upgrade their libmpv version by overwriting mpv-2.dll. You will need to add lua51.dll to the same folder as well.
+> Some media players based on libmpv use `libmpv-2.dll` or `mpv-2.dll`. You can upgrade their libmpv version by overwriting this DLL file. You will need to add lua51.dll to the same folder as well.
 
 ### Release Retention Policy
 
