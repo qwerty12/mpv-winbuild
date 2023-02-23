@@ -40,6 +40,8 @@ package() {
     zip $bit $arch $x86_64_level
     sudo rm -rf $buildroot/build$bit/mpv-*
     sudo chmod -R a+rwx $buildroot/build$bit
+    rm -rf $buildroot/install_rustup/.cargo/registry/{cache,src}
+    rm -rf $buildroot/install_rustup/.cargo/git/checkouts
 }
 
 build() {
@@ -49,7 +51,7 @@ build() {
 
     declare -r target="$arch-w64-mingw32"
 
-    cmake -DTARGET_ARCH="$target" $gcc_arch -DALWAYS_REMOVE_BUILDFILES=ON -DSINGLE_SOURCE_LOCATION=$srcdir -G Ninja -H$gitdir -B$buildroot/build$bit
+    cmake -DTARGET_ARCH="$target" $gcc_arch -DALWAYS_REMOVE_BUILDFILES=ON -DSINGLE_SOURCE_LOCATION=$srcdir -DRUSTUP_LOCATION=$buildroot/install_rustup -G Ninja -H$gitdir -B$buildroot/build$bit
     for i in vulkan vulkan-header libjxl libssh libopenmpt libzimg libplacebo libsrt mpv; do
         ninja -C $buildroot/build$bit "$i-fullclean" || true
     done
@@ -68,6 +70,10 @@ build() {
             sleep 10s
             ((i++))
         done
+    fi
+    if [[ ! "$(ls -A $buildroot/install_rustup/.cargo/bin)" ]]; then
+        ninja -C $buildroot/build$bit rustup-fullclean
+        ninja -C $buildroot/build$bit rustup
     fi
     for (( i = 0 ; i < 3 ; i++ )); do
         ninja -C $buildroot/build$bit update && break
