@@ -146,7 +146,7 @@ jobs:
             ${{ runner.os }}-source
       - name: Restore Rust Cache
         if: ${{ github.event.inputs.needclean != 'true' }}
-        uses: actions/cache/restore@v3.2.4
+        uses: actions/cache/restore@v3.2.6
         id: cache_rust
         with:
           path: ${{ github.workspace }}/mpv-winbuild-cmake/install_rustup
@@ -322,7 +322,7 @@ jobs:
           key: ${{ runner.os }}-source-${{ env.cache_suffix }}
       - name: Save Rust Cache
         if: ${{ github.ref_name == 'main' }}
-        uses: actions/cache/save@v3.2.4
+        uses: actions/cache/save@v3.2.6
         with:
           path: ${{ github.workspace }}/mpv-winbuild-cmake/install_rustup
           key: ${{ runner.os }}-rust-${{ env.cache_suffix }}
