@@ -4,9 +4,11 @@
 [![releases](https://img.shields.io/github/v/release/qwerty12/mpv-winbuild)](https://github.com/qwerty12/mpv-winbuild/releases/latest)
 [![downloads](https://img.shields.io/github/downloads/qwerty12/mpv-winbuild/total)](https://github.com/qwerty12/mpv-winbuild/releases)
 
-Uses Github Actions to build mpv for Windows daily.
+Uses Github Actions to build mpv for Windows daily, thanks to https://github.com/zhongfly/mpv-winbuild/
 
-mpv is built from [my *fork* of shinchiro's mpv-winbuild-cmake](https://github.com/qwerty12/mpv-winbuild-cmake/). My [Scoop](https://scoop.sh/) bucket, [scoop-alts](https://github.com/qwerty12/scoop-alts), installs this version of mpv.
+mpv is built from [my *fork* of shinchiro's mpv-winbuild-cmake](https://github.com/qwerty12/mpv-winbuild-cmake/). My [Scoop](https://scoop.sh/) bucket, [scoop-alts](https://github.com/qwerty12/scoop-alts), installs this version (x64-v3) of mpv.
+
+Note: if any dependency not introduced by me fails to build, I do not attempt to find a fix or rollback to a last-known-good commit. I usually wait for a fix to appear in shinchiro's mpv-winbuild-cmake. zhongfly works very hard to pretty much ensure a fresh mpv build each day; if that is important to you, you will be well served by his builds. This repo is just a small modification of his.
 
 The notable changes are:
 
@@ -28,17 +30,17 @@ The notable changes are:
 
     * Do not report any bugs relating to `sub-filter-regex` (maybe even subtitles in general) to the mpv team
 
-Because the mpv builds here have been modified with unofficial patches, please see if you can reproduce any bugs you may experience with [shinchiro's pristine builds](https://github.com/shinchiro/mpv-winbuild-cmake/releases) before making a bugreport to the mpv team. Let them know you're using this dirty build at the very least.
+Everything else is pretty much the same as shinchiro's builds.
 
-Everything else is pretty much the same as shinchiro's builds. Thanks to https://github.com/zhongfly/mpv-winbuild/
+As the mpv builds here have been modified with unofficial patches, please see if you can reproduce any bugs you may experience with [shinchiro's pristine builds](https://github.com/shinchiro/mpv-winbuild-cmake/releases) before making a bugreport to the mpv team. Let them know you're using this dirty build at the very least.
 
 ## Auto-Builds
 
 Builds run daily at 12:00 UTC and are automatically released on success.
 
-On the first of every month, the cache will be automatically cleared. This ensures the underlying MinGW installation is fresh.
+On the first of every month, the cache will be automatically cleared. This ensures the underlying MinGW installation is fresh and up-to-date. This does cause successful builds to be released later than usual, however, on account of the increased build time.
 
-This repo only provides 64-bit version. If you need a 32-bit version, you can fork this repo and edit mpv.yml.
+Only 64-bit versions of mpv are provided. If you need a 32-bit version, you can fork this repo and edit mpv.yml. Or just use shinchiro/zhongfly's builds.
 
 > `mpv-dev-x86_64-xxxx.7z` is 64-bit libmpv version, including the `libmpv-2.dll` file.
 > 
@@ -46,7 +48,7 @@ This repo only provides 64-bit version. If you need a 32-bit version, you can fo
 
 ### Release Retention Policy
 
--   Artifacts (from the Actions tab) are cleaned every 30 days
+-   Artifacts (from the Actions tab), and their corresponding build logs, are cleaned every 30 days
 -   Releases that are 30 days old should be removed
 
 ## frei0r plugin support
@@ -55,13 +57,11 @@ This repo only provides 64-bit version. If you need a 32-bit version, you can fo
 
 * Plugins that require Cairo, OpenCV or gavl are not built/included
 
-* As they are ~~150 MB uncompressed~~ in the realm of 50 MB uncompressed, they are not bundled with the mpv build here proper.
+* As they are in the realm of 50 MB uncompressed, they are not bundled with the mpv build here proper.
 
     * You will need to download them separately from the [releases](https://github.com/qwerty12/mpv-winbuild/releases/latest) and extract them to a path of your choosing
 
-    * If you grabbed an early build of the plugins, please download them again from the latest release. I had not `strip`ped the debugging symbols from them, which made up their large size
-
-     * Most of the time, you will not need to keep downloading them with every mpv release, especially if the plugins are built from the same Git commit. If their API changes (unlikely) and mpv can't load the DLLs, then yes, download them again
+     * Most of the time, you will not need to keep redownloading them with every mpv release, especially if the plugins are built from the same Git commit. If their API changes (unlikely) and mpv can't load the DLLs, then yes, try then
 
 * You have three choices for getting mpv to see the frei0r plugins:
 
