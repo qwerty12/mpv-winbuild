@@ -4,7 +4,7 @@
 [![releases](https://img.shields.io/github/v/release/qwerty12/mpv-winbuild)](https://github.com/qwerty12/mpv-winbuild/releases/latest)
 [![downloads](https://img.shields.io/github/downloads/qwerty12/mpv-winbuild/total)](https://github.com/qwerty12/mpv-winbuild/releases)
 
-Uses Github Actions to build mpv for Windows daily, thanks to https://github.com/zhongfly/mpv-winbuild/
+Uses Github Actions to build [mpv](https://github.com/mpv-player/mpv/) for Windows daily, thanks to https://github.com/zhongfly/mpv-winbuild/
 
 mpv is built from [my *fork* of shinchiro's mpv-winbuild-cmake](https://github.com/qwerty12/mpv-winbuild-cmake/). My [Scoop](https://scoop.sh/) bucket, [scoop-alts](https://github.com/qwerty12/scoop-alts), installs this version (x64-v3) of mpv.
 
