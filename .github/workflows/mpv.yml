@@ -268,10 +268,14 @@ jobs:
                 await exec.exec(`7z a -m0=lzma2 -mx=9 -myx=9 -ms=on mpv-winbuild-cmake/release/${frei0r_name}.7z ./mpv-winbuild-cmake/build${{ matrix.bit }}/install/mingw/lib/frei0r-1`)
                 core.exportVariable( 'frei0r_name', frei0r_name );
               } else {
-                core.info(frei0r_git_proc.stderr);
+                throw frei0r_git_proc.stderr;
               }
             } catch (err) {
               core.info(err);
+              const { writeFileSync } = require('fs');
+              const frei0r_name = `frei0r-FAIL`;
+              writeFileSync(`mpv-winbuild-cmake/release/${frei0r_name}.7z`, "frei0r failed to build, this is a dummy file so the release succeeds");
+              core.exportVariable( 'frei0r_name', frei0r_name );
             }
 
       - name: upload mpv-debug
