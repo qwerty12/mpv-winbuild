@@ -406,11 +406,11 @@ jobs:
             const upstream_remote = await myExec(`git -C ${upstreamDir} config --get remote.origin.url`);
             const upstream_url = getCommitUrl(upstream_hash, upstream_remote);
 
-            await core.summary
-            .addRaw(`mpv-winbuild-cmake: <a href="${upstream_url}">${upstream_hash.slice(0,7)}</a>`,true)
-            .addHeading('Packages Version')
-            .addTable(packages_table)
-            .write();
+            let summary = await core.summary
+              .addRaw(`mpv-winbuild-cmake: <a href="${upstream_url}">${upstream_hash.slice(0,7)}</a>`,true);
+            summary.addHeading('Packages Version')
+              .addTable(packages_table)
+              .write();
 
   publish_release:
     name: Publish release
