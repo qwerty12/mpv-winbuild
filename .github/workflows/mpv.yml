@@ -58,7 +58,7 @@ jobs:
             echo "cache_id=$(echo $RANDOM | md5sum | head -c 20)" >> $GITHUB_ENV
           fi
       - id: script
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const commit = await github.rest.repos.getCommit({
@@ -226,7 +226,7 @@ jobs:
 
       - name: "Get artifacts' name and path"
         id: get_files
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const path = require('path');
@@ -335,7 +335,7 @@ jobs:
           key: ${{ runner.os }}-mpv-build${{ matrix.bit }}-${{ env.cache_suffix }}
 
       - name: "Job summary"
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         continue-on-error: true
         if: ${{ always() }}
         with:
@@ -426,7 +426,7 @@ jobs:
           path: artifacts
     
       - name: "Check artifacts"
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const globber = await glob.create(`artifacts/*/mpv*.7z`);
@@ -461,7 +461,7 @@ jobs:
 
       - name: "Generate release note"
         id: note
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const sha = `${{fromJson(needs.params.outputs.params).sha}}`;
